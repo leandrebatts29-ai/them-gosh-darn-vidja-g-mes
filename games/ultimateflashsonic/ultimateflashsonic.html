@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,17 +34,14 @@ body {
 #ruffle, ruffle-player {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    outline: none; /* remove focus outline */
 }
 
-/* Fullscreen fix */
+/* 🔥 Fullscreen Fix */
 .game-container:fullscreen {
     width: 100vw;
     height: 100vh;
     border-radius: 0;
 }
-
 .fullscreen-btn {
     margin-top: 15px;
     padding: 10px 20px;
@@ -66,7 +63,10 @@ a {
     font-weight: bold;
 }
 </style>
+
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 </head>
+
 <body>
 
 <h1>Ultimate Flash Sonic</h1>
@@ -82,33 +82,19 @@ a {
     </button>
 </div>
 
-<!-- Latest nightly Ruffle for best compatibility -->
-<script src="https://unpkg.com/@ruffle-rs/ruffle-nightly"></script>
-
 <script>
 window.addEventListener("load", () => {
     const ruffle = window.RufflePlayer.newest();
-    const container = document.getElementById("ruffle");
     const player = ruffle.createPlayer();
+    const container = document.getElementById("ruffle");
 
-    player.id = "player";
-    player.style.width = "100%";
-    player.style.height = "100%";
-    player.tabIndex = 0; // allows focus for keyboard/mouse
     container.appendChild(player);
-
     player.load("../../assets/swf/ultimate-flash-sonic.swf");
-
-    // Force focus on click
-    player.addEventListener("click", () => player.focus());
-
-    // Optional: automatically focus after load
-    setTimeout(() => player.focus(), 200);
 });
 
-// Fullscreen button
 function goFullscreen() {
     const elem = document.getElementById("gameContainer");
+
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) {
@@ -116,12 +102,6 @@ function goFullscreen() {
     } else if (elem.msRequestFullscreen) {
         elem.msRequestFullscreen();
     }
-
-    // Refocus after entering fullscreen
-    setTimeout(() => {
-        const player = document.getElementById("player");
-        if (player) player.focus();
-    }, 200);
 }
 </script>
 
