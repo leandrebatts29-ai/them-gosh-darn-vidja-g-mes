@@ -85,25 +85,27 @@ a {
 <script>
 window.addEventListener("load", () => {
     const ruffle = window.RufflePlayer.newest();
+    const container = document.getElementById("ruffle"); // get container first
     const player = ruffle.createPlayer();
-player.id = "player";
-player.style.width = "100%";
-player.style.height = "100%";
-container.appendChild(player);
+    player.id = "player";
+    player.style.width = "100%";
+    player.style.height = "100%";
 
-// Force focus on click
-player.addEventListener("click", () => {
-    player.focus();
-});
-    const container = document.getElementById("ruffle");
-
+    // Append to container
     container.appendChild(player);
+
+    // Force focus on click
+    player.addEventListener("click", () => {
+        player.focus();
+    });
+
+    // Load the SWF
     player.load("../../assets/swf/ultimate-flash-sonic.swf");
 });
 
+// Fullscreen button
 function goFullscreen() {
     const elem = document.getElementById("gameContainer");
-
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
     } else if (elem.webkitRequestFullscreen) {
@@ -113,6 +115,5 @@ function goFullscreen() {
     }
 }
 </script>
-
 </body>
 </html>
