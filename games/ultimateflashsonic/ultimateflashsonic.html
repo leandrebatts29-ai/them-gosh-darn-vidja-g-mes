@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,14 +34,17 @@ body {
 #ruffle, ruffle-player {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* prevents distortion */
+    object-fit: contain;
+    outline: none; /* remove focus outline */
 }
-/* 🔥 Fullscreen Fix */
+
+/* Fullscreen fix */
 .game-container:fullscreen {
     width: 100vw;
     height: 100vh;
     border-radius: 0;
 }
+
 .fullscreen-btn {
     margin-top: 15px;
     padding: 10px 20px;
@@ -63,10 +66,7 @@ a {
     font-weight: bold;
 }
 </style>
-
-<script src="https://unpkg.com/@ruffle-rs/ruffle-nightly"></script>
 </head>
-
 <body>
 
 <h1>Ultimate Flash Sonic</h1>
@@ -82,6 +82,9 @@ a {
     </button>
 </div>
 
+<!-- Latest nightly Ruffle for best compatibility -->
+<script src="https://unpkg.com/@ruffle-rs/ruffle-nightly"></script>
+
 <script>
 window.addEventListener("load", () => {
     const ruffle = window.RufflePlayer.newest();
@@ -91,21 +94,16 @@ window.addEventListener("load", () => {
     player.id = "player";
     player.style.width = "100%";
     player.style.height = "100%";
-    player.style.outline = "none"; // removes focus outline
-    player.tabIndex = 0;           // allows focus
-
+    player.tabIndex = 0; // allows focus for keyboard/mouse
     container.appendChild(player);
 
-    // Load SWF
     player.load("../../assets/swf/ultimate-flash-sonic.swf");
 
-    // Ensure focus for mouse & keyboard
-    player.addEventListener("click", () => {
-        player.focus();
-    });
+    // Force focus on click
+    player.addEventListener("click", () => player.focus());
 
-    // Optional: automatically focus on load
-    player.focus();
+    // Optional: automatically focus after load
+    setTimeout(() => player.focus(), 200);
 });
 
 // Fullscreen button
@@ -119,11 +117,11 @@ function goFullscreen() {
         elem.msRequestFullscreen();
     }
 
-    // Re-focus after entering fullscreen
+    // Refocus after entering fullscreen
     setTimeout(() => {
         const player = document.getElementById("player");
         if (player) player.focus();
-    }, 100);
+    }, 200);
 }
 </script>
 
