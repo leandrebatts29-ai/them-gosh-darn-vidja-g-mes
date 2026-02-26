@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +11,14 @@ body {
     font-family: Arial, sans-serif;
     background-color: #5f9ea0;
     color: white;
-    padding: 40px 20px;
     text-align: center;
+    padding: 40px 20px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 .game-wrapper {
@@ -31,18 +37,25 @@ body {
     transition: all 0.3s ease;
 }
 
+#ruffle-container {
+    width: 100%;
+    height: 100%;
+    outline: none; /* remove default focus outline */
+}
+
 #ruffle, ruffle-player {
     width: 100%;
     height: 100%;
-    pointer-events: auto; /* Ensure mouse clicks reach the SWF */
+    pointer-events: auto; /* important for mouse clicks */
 }
-    
-/* 🔥 Fullscreen Fix */
+
+/* Fullscreen Fix */
 .game-container:fullscreen {
     width: 100vw;
     height: 100vh;
     border-radius: 0;
 }
+
 .fullscreen-btn {
     margin-top: 15px;
     padding: 10px 20px;
@@ -57,17 +70,10 @@ body {
 .fullscreen-btn:hover {
     background: #333;
 }
-
-a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-}
 </style>
 
 <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
 </head>
-
 <body>
 
 <h1>Ultimate Flash Sonic</h1>
@@ -75,7 +81,9 @@ a {
 
 <div class="game-wrapper">
     <div class="game-container" id="gameContainer">
-        <div id="ruffle"></div>
+        <div id="ruffle-container" tabindex="0">
+            <div id="ruffle"></div>
+        </div>
     </div>
 
     <button class="fullscreen-btn" onclick="goFullscreen()">
@@ -84,24 +92,37 @@ a {
 </div>
 
 <script>
-    
 window.addEventListener("load", () => {
     const ruffle = window.RufflePlayer.newest();
     const player = ruffle.createPlayer();
-    const container = document.getElementById("ruffle");
+    const ruffleDiv = document.getElementById("ruffle");
+    const container = document.getElementById("ruffle-container");
 
-    container.appendChild(player);
+    // Append the player and load the SWF
+    ruffleDiv.appendChild(player);
     player.load("../../assets/swf/ultimate-flash-sonic.swf");
 
-    // Focus so mouse controls work
+    // Focus initially so mouse/keyboard work
     player.focus();
+
+    // Refocus on click inside container (main menu + in-game)
+    container.addEventListener("click", () => {
+        player.focus();
+    });
+
+    // Optional: refocus on mouse move (extra reliability)
+    container.addEventListener("mousemove", () => {
+        player.focus();
+    });
 });
-    
+
+// Fullscreen helper
 function goFullscreen() {
     const elem = document.getElementById("gameContainer");
-
     if (elem.requestFullscreen) {
-        elem.requestFullscreen();
+        elem.requestFullscreen().then(() => {
+            document.getElementById("ruffle").focus();
+        });
     } else if (elem.webkitRequestFullscreen) {
         elem.webkitRequestFullscreen();
     } else if (elem.msRequestFullscreen) {
