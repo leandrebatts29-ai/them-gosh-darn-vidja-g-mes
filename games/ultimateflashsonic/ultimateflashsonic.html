@@ -85,22 +85,27 @@ a {
 <script>
 window.addEventListener("load", () => {
     const ruffle = window.RufflePlayer.newest();
-    const container = document.getElementById("ruffle"); // get container first
+    const container = document.getElementById("ruffle");
     const player = ruffle.createPlayer();
+
     player.id = "player";
     player.style.width = "100%";
     player.style.height = "100%";
+    player.style.outline = "none"; // removes focus outline
+    player.tabIndex = 0;           // allows focus
 
-    // Append to container
     container.appendChild(player);
 
-    // Force focus on click
+    // Load SWF
+    player.load("../../assets/swf/ultimate-flash-sonic.swf");
+
+    // Ensure focus for mouse & keyboard
     player.addEventListener("click", () => {
         player.focus();
     });
 
-    // Load the SWF
-    player.load("../../assets/swf/ultimate-flash-sonic.swf");
+    // Optional: automatically focus on load
+    player.focus();
 });
 
 // Fullscreen button
@@ -113,7 +118,14 @@ function goFullscreen() {
     } else if (elem.msRequestFullscreen) {
         elem.msRequestFullscreen();
     }
+
+    // Re-focus after entering fullscreen
+    setTimeout(() => {
+        const player = document.getElementById("player");
+        if (player) player.focus();
+    }, 100);
 }
 </script>
+
 </body>
 </html>
