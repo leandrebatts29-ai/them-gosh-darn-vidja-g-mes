@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fancy Pants Adventure</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #5f9ea0;
+    color: white;
+    text-align: center;
+    padding: 40px 20px;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.game-wrapper {
+    margin: 30px auto;
+    max-width: 900px;
+}
+
+.game-container {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(95,158,160,0.8);
+    overflow: hidden;
+}
+
+#ruffle-container {
+    width: 100%;
+    height: 100%;
+    outline: none;
+    position: relative;
+}
+
+#ruffle, ruffle-player {
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+/* Fullscreen Fix */
+.game-container:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+}
+
+.fullscreen-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #222;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.fullscreen-btn:hover {
+    background: #333;
+}
+
+/* Keyboard overlay */
+#keyboard-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: default;
+    z-index: 100;
+    color: white;
+    text-align: center;
+}
+#keyboard-overlay small {
+    font-size: 16px;
+    margin-top: 10px;
+}
+</style>
+
+<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+</head>
+<body>
+
+<h1>Fancy Pants Adventure</h1>
+<p><a href="../../index.html">← Back to Home</a></p>
+
+<div class="game-wrapper">
+    <div class="game-container" id="gameContainer">
+        <div id="ruffle-container" tabindex="0">
+            <div id="ruffle"></div>
+            <div id="keyboard-overlay">
+                Press SPACE to Start<br>
+                <small>This is to focus the game, so if you click "fullscreen", you may have to click back in a few times.</small>
+            </div>
+        </div>
+    </div>
+
+    <button class="fullscreen-btn" onclick="goFullscreen()">
+        ⛶ Fullscreen
+    </button>
+</div>
+
+<script>
+window.addEventListener("load", () => {
+    const ruffle = window.RufflePlayer.newest();
+    const player = ruffle.createPlayer();
+    const ruffleDiv = document.getElementById("ruffle");
+    const container = document.getElementById("ruffle-container");
+    const overlay = document.getElementById("keyboard-overlay");
+
+    ruffleDiv.appendChild(player);
+    player.load("fancypantsadventure.swf");
+
+    // Initial focus
+    player.focus();
+
+    // Refocus on click or mousemove
+    container.addEventListener("click", () => player.focus());
+    container.addEventListener("mousemove", () => player.focus());
+
+    // Keyboard overlay: start game
+    function startGame() {
+        overlay.style.display = "none"; // hide overlay
+        player.focus();
+        document.removeEventListener("keydown", keyHandler);
+    }
+
+    function keyHandler(e) {
+        if (e.code === "Space") startGame();
+    }
+
+    document.addEventListener("keydown", keyHandler);
+});
+
+// Fullscreen helper
+function goFullscreen() {
+    const elem = document.getElementById("gameContainer");
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen().then(() => {
+            document.getElementById("ruffle").focus();
+        });
+    } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+    }
+}
+</script>
+
+</body>
+</html>
